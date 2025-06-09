@@ -14,8 +14,16 @@ class ExcelProcessor:
 
     def load_excel(self, file_path: str):
         """Load Excel file and parse all sheets into DataFrames."""
-        xl = pd.ExcelFile(file_path, engine="openpyxl")
-        self.sheet_map = {sheet: xl.parse(sheet).dropna(how='all', axis=0).dropna(how='all', axis=1) for sheet in xl.sheet_names}
+        try:
+            ext = file_path.lower().split('.')[-1]
+            engine = "openpyxl" if ext == "xlsx" else "xlrd"
+            xl = pd.ExcelFile(file_path, engine=engine)
+            self.sheet_map = {
+                sheet: xl.parse(sheet).dropna(how='all', axis=0).dropna(how='all', axis=1)
+                for sheet in xl.sheet_names
+            }
+        except Exception as e:
+            raise ValueError(f"Failed to load Excel file: {e}")
 
     def list_tables(self) -> List[str]:
         """Return list of sheet/table names."""
@@ -29,7 +37,6 @@ class ExcelProcessor:
         if df.empty:
             return []
 
-        # Extract first column values as strings, drop NaN, trim whitespace
         first_col = df.iloc[:, 0].dropna().astype(str).str.strip()
         return first_col[offset:offset + limit].tolist()
 
@@ -45,18 +52,12 @@ class ExcelProcessor:
             return None
         s = str(s).strip()
 
-        # Handle fractions like "1 3/4"
         frac_match = re.match(r"^(\d+)\s+(\d+)/(\d+)$", s)
         if frac_match:
-            whole = int(frac_match.group(1))
-            numerator = int(frac_match.group(2))
-            denominator = int(frac_match.group(3))
-            return whole + numerator / denominator
+            whole, num, denom = map(int, frac_match.groups())
+            return whole + num / denom
 
-        # Remove currency symbols, commas, spaces
         cleaned = re.sub(r"[$, ]", "", s)
-
-        # Handle percentages
         is_percent = False
         if cleaned.endswith("%"):
             is_percent = True
@@ -64,9 +65,7 @@ class ExcelProcessor:
 
         try:
             val = float(cleaned)
-            if is_percent:
-                val = val / 100
-            return val
+            return val / 100 if is_percent else val
         except ValueError:
             return None
 
@@ -81,9 +80,8 @@ class ExcelProcessor:
         if matched_rows.empty:
             raise ValueError(f"Row '{row_name}' not found in table '{table_name}'.")
 
-        row_values = matched_rows.iloc[0, 1:]  # skip first col (row name)
-        numeric_values = [self._extract_numeric(v) for v in row_values]
-        numeric_values = [v for v in numeric_values if v is not None]
+        row_values = matched_rows.iloc[0, 1:]
+        numeric_values = [self._extract_numeric(v) for v in row_values if self._extract_numeric(v) is not None]
         return sum(numeric_values)
 
     def column_sum(self, table_name: str, column_name: str) -> float:
@@ -96,6 +94,5 @@ class ExcelProcessor:
             raise ValueError(f"Column '{column_name}' not found in table '{table_name}'.")
 
         col_values = df[column_name]
-        numeric_values = [self._extract_numeric(v) for v in col_values]
-        numeric_values = [v for v in numeric_values if v is not None]
+        numeric_values = [self._extract_numeric(v) for v in col_values if self._extract_numeric(v) is not None]
         return sum(numeric_values)

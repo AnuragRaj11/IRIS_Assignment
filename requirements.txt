@@ -1,5 +1,5 @@
-fastapi
-uvicorn
 pandas
 openpyxl
-python-multipart
+xlrd==1.2.0
+fastapi
+uvicorn
