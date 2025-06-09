@@ -1,3 +1,37 @@
+#!/bin/bash
+
+# Project directory name
+PROJECT_DIR="enhanced-excel-processor-api"
+
+echo "Creating project directory structure..."
+
+# Create main project folder
+mkdir -p $PROJECT_DIR
+
+# Change into project directory
+cd $PROJECT_DIR || exit
+
+# Create folders
+mkdir -p screenshots
+
+# Create blank code files
+touch main.py
+touch excel_processor.py
+
+# Create blank postman_collection.json
+echo "{}" > postman_collection.json
+
+# Create blank requirements.txt with minimal dependencies
+cat > requirements.txt << EOL
+fastapi
+uvicorn[standard]
+pandas
+openpyxl
+python-multipart
+EOL
+
+# Create README.md with improved README content
+cat > README.md << 'EOL'
 # 📊 Enhanced Excel Processor API (FastAPI)
 
 A **FastAPI** application that dynamically reads, processes, and analyzes Excel (`.xls` and `.xlsx`) files, providing RESTful endpoints to interact with sheet tables, rows, and columns. This API intelligently handles complex Excel data formats and edge cases, making data extraction and numeric summarization smooth and reliable.
@@ -75,8 +109,6 @@ Open your browser and visit the interactive API docs:
 ## 🧪 Testing
 
 You can quickly test all endpoints using the included Postman collection: \`postman_collection.json\`.
-[Download Postman Collection](postman_collection.json)
-
 
 - Base URL: \`http://localhost:9090\`
 - Import the collection and run the provided requests for uploading files, listing tables, fetching row names, and summing rows/columns.
@@ -121,77 +153,12 @@ This API is designed to gracefully handle common and tricky scenarios:
 
 ---
 
-![Upload Screenshot](screenshots/upload.png)
-{
-    "message": "Excel file uploaded successfully",
-    "tables": [
-        "CapBudgWS"
-    ]
-}
+## 🤝 Contributions & Feedback
 
-![List Table Screenshot](screenshots\list table.png)
-{
-    "message": "Excel file uploaded successfully",
-    "tables": [
-        "CapBudgWS"
-    ]
-}
+Contributions, bug reports, and feature requests are welcome! Feel free to open issues or submit pull requests.
 
-![Table Details Screenshot](screenshots\table details.png)
-{
-    "table_name": "CapBudgWS",
-    "row_names": [
-        "INITIAL INVESTMENT",
-        "Initial Investment=",
-        "Opportunity cost (if any)=",
-        "Lifetime of the investment",
-        "Salvage Value at end of project=",
-        "Deprec. method(1:St.line;2:DDB)=",
-        "Tax Credit (if any )=",
-        "Other invest.(non-depreciable)=",
-        "WORKING CAPITAL",
-        "Initial Investment in Work. Cap=",
-        "Working Capital as % of Rev=",
-        "Salvageable fraction at end=",
-        "GROWTH RATES",
-        "Revenues",
-        "Fixed Expenses",
-        "Default: The fixed expense growth rate is set equal to the growth rate in revenues by default.",
-        "INITIAL INVESTMENT",
-        "Investment",
-        "- Tax Credit",
-        "Net Investment",
-        "+ Working Cap",
-        "+ Opp. Cost",
-        "+ Other invest.",
-        "Initial Investment",
-        "SALVAGE VALUE",
-        "Equipment",
-        "Working Capital",
-        "OPERATING CASHFLOWS",
-        "Lifetime Index",
-        "Revenues",
-        "-Var. Expenses",
-        "- Fixed Expenses",
-        "EBITDA",
-        "- Depreciation",
-        "EBIT",
-        "-Tax",
-        "EBIT(1-t)",
-        "+ Depreciation",
-        "- ∂ Work. Cap",
-        "NATCF",
-        "Discount Factor",
-        "Discounted CF",
-        "Book Value (beginning)",
-        "Depreciation",
-        "BV(ending)"
-    ]
-}
+EOL
 
-![Row Sum Screenshot](screenshots\row sum.png)
-{
-    "table_name": "CapBudgWS",
-    "row_name": "Tax Credit (if any )=",
-    "sum": 0.4
-}
+echo "Project setup completed."
+echo "Run 'source venv/bin/activate' (Linux/macOS) or 'venv\\Scripts\\activate' (Windows) to activate the environment."
+echo "Then run 'pip install -r requirements.txt' to install dependencies."
