@@ -1,35 +1,36 @@
+
 # 📊 Enhanced Excel Processor API (FastAPI)
 
-A **FastAPI** application that dynamically reads, processes, and analyzes Excel (`.xls` and `.xlsx`) files, providing RESTful endpoints to interact with sheet tables, rows, and columns. This API intelligently handles complex Excel data formats and edge cases, making data extraction and numeric summarization smooth and reliable.
+A **FastAPI** application that dynamically reads, processes, and analyzes Excel (`.xls` and `.xlsx`) files, providing RESTful endpoints to interact with sheet tables, rows, and columns. This API handles complex Excel data formats and edge cases, ensuring reliable data extraction and numeric summarization.
 
 ---
 
 ## ✨ Features
 
-- 📂 Upload Excel files (`.xls` or `.xlsx`) dynamically via API  
-- 🧾 Detect and extract tables from any Excel sheet  
-- 🗂️ List all available sheets/tables in the uploaded file  
-- 🔍 Retrieve row names (first column values) for any table  
-- ➕ Compute sums of numeric values in:  
-  - Specific rows (`/row_sum`)  
-  - Specific columns (`/column_sum`)  
-- 🧠 Robust parsing of complex numeric formats:  
-  - Scientific notation (`1.23E+5`)  
-  - Currency values (`$1,000`)  
-  - Percentages (`10%`)  
-  - Mixed fractions (`1 3/4`)  
-- 📜 Supports pagination for large tables (`limit` and `offset` query params)  
-- 🚫 Graceful handling of empty, missing, or corrupt Excel files  
-- 🧼 Strong input validation and error handling  
-- ⚙️ Optional inclusion of hidden sheets and rows (`?include_hidden=true`)  
-- 🔄 Thread-safe file processing for concurrent requests  
-- 📡 Interactive API documentation via Swagger UI  
+- 📂 Upload Excel files (`.xls` or `.xlsx`) dynamically via API
+- 🗞️ Detect and extract tables from any Excel sheet
+- 📂 List all available sheets/tables in the uploaded file
+- 🔍 Retrieve row names (first column values) for any table
+- ➕ Compute sums of numeric values in:
+  - Specific rows (`/row_sum`)
+  - Specific columns (`/column_sum`)
+- 🧠 Robust parsing of complex numeric formats:
+  - Scientific notation (`1.23E+5`)
+  - Currency values (`$1,000`)
+  - Percentages (`10%`)
+  - Mixed fractions (`1 3/4`)
+- 📜 Supports pagination for large tables (`limit`, `offset`)
+- ❌ Graceful handling of empty, missing, or corrupt Excel files
+- 🧼 Strong input validation and error handling
+- ⚙️ Optionally include hidden sheets and rows (`?include_hidden=true`)
+- 🔄 Thread-safe file processing for concurrent requests
+- 📡 Interactive API documentation via Swagger UI
 
 ---
 
 ## 📦 Installation
 
-\`\`\`bash
+```bash
 # Clone the repository
 git clone <repository-url>
 cd <repository-directory>
@@ -43,155 +44,116 @@ venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
-\`\`\`
+```
 
 ---
 
 ## 🚀 Running the API
 
-Start the FastAPI server:
-
-\`\`\`bash
+```bash
 uvicorn main:app --reload --port 9090
-\`\`\`
+```
 
-Open your browser and visit the interactive API docs:  
-[http://127.0.0.1:9090/docs](http://127.0.0.1:9090/docs)
+Open in browser: [http://127.0.0.1:9090/docs](http://127.0.0.1:9090/docs)
 
 ---
 
 ## 🔗 API Endpoints
 
-| Endpoint             | Method | Description                                               | Query/Form Params                        |
-|----------------------|--------|-----------------------------------------------------------|-----------------------------------------|
-| \`/upload\`            | POST   | Upload an Excel file (.xls or .xlsx)                       | \`file\` (form-data)                      |
-| \`/list_tables\`       | GET    | List all available sheet/table names                       | None                                    |
-| \`/get_table_details\` | GET    | Get row names (first column values) for a sheet            | \`table_name\` (str), \`limit\` (int, opt), \`offset\` (int, opt) |
-| \`/row_sum\`           | GET    | Calculate sum of numeric values in a specific row          | \`table_name\` (str), \`row_name\` (str)   |
-| \`/column_sum\`        | GET    | Calculate sum of numeric values in a specific column       | \`table_name\` (str), \`column_name\` (str)|
+| Endpoint             | Method | Description                                | Params                          |
+| -------------------- | ------ | ------------------------------------------ | ------------------------------- |
+| `/upload`            | POST   | Upload an Excel file (.xls or .xlsx)       | `file` (form-data)              |
+| `/list_tables`       | GET    | List all sheet/table names                 | None                            |
+| `/get_table_details` | GET    | Get row names (first column) for a sheet   | `table_name`, `limit`, `offset` |
+| `/row_sum`           | GET    | Sum of numeric values in a specific row    | `table_name`, `row_name`        |
+| `/column_sum`        | GET    | Sum of numeric values in a specific column | `table_name`, `column_name`     |
 
 ---
 
-## 🧪 Testing
+## 🧪 Testing with Postman
 
-You can quickly test all endpoints using the included Postman collection: \`postman_collection.json\`.
+Use the included Postman collection: `postman_collection.json`
 [Download Postman Collection](postman_collection.json)
 
 
-- Base URL: \`http://localhost:9090\`
-- Import the collection and run the provided requests for uploading files, listing tables, fetching row names, and summing rows/columns.
+- Base URL: `http://localhost:9090`
+- Import collection, test upload, list, row/column sum
 
 ---
 
 ## ⚠️ Handling Edge Cases
 
-This API is designed to gracefully handle common and tricky scenarios:
-
-- **Invalid or Corrupt Files:** Uploads are validated to prevent crashes on malformed Excel files.  
-- **Empty or Non-Numeric Rows/Columns:** Summation endpoints return \`0\` or meaningful warnings when no numeric data is found.  
-- **Trailing Spaces in Names:** All table and row names are trimmed to avoid mismatches caused by whitespace.  
-- **Large Files:** Pagination with \`limit\` and \`offset\` parameters prevents memory overloads and improves performance.  
-- **Concurrent Requests:** Thread-safe processing avoids race conditions during multiple simultaneous uploads or queries.  
-- **Complex Numeric Formats:** Supports parsing of currencies (\`$1,000\`), scientific notation (\`1.23E+5\`), percentages (\`10%\`), and mixed fractions (\`1 3/4\`).  
-- **Hidden Sheets and Rows:** Optionally included via \`?include_hidden=true\` query flag for thorough data access.  
-- **Special Characters:** Table and row names containing special characters or emojis are sanitized and URL-encoded to prevent parsing issues.
+- Invalid files: Graceful rejection with error message
+- Empty/Non-numeric columns: Return `0` or message
+- Trimmed names: Avoid mismatches
+- Large files: Use `limit` and `offset`
+- Concurrent requests: Thread-safe
+- Complex formats: Handle currency, %, fractions, scientific notation
+- Hidden data: Optional inclusion via query
+- Special chars: Sanitized and URL-safe
 
 ---
 
 ## 📂 Project Structure
 
-\`\`\`
-├── excel_processor.py       # Core logic for Excel file processing
-├── main.py                  # FastAPI app and endpoints
-├── requirements.txt         # Python dependencies
-├── postman_collection.json  # Postman collection for API testing
-├── README.md                # This documentation
-└── screenshots/             # Screenshots demonstrating usage and API responses
-\`\`\`
+```
+├── excel_processor.py       # Core Excel logic
+├── main.py                  # FastAPI app and routes
+├── requirements.txt         # Dependencies
+├── postman_collection.json  # Postman collection
+├── README.md                # Documentation
+└── screenshots/             # Screenshot samples
+```
 
 ---
 
-## 🔮 Future Improvements
+## 🔮 Future Enhancements
 
-- Support streaming or chunked reading for very large Excel files  
-- Implement caching or database-backed storage for uploaded files to improve concurrency  
-- Add advanced analytics endpoints (average, median, filtering, min/max)  
-- Build a frontend UI for easier interaction and visualization  
-- Add automated tests for edge cases and API endpoints  
+- Chunked streaming for large files
+- Caching and storage backend
+- Analytics endpoints (avg, min/max)
+- Frontend UI for interaction
+- Automated tests for all cases
 
 ---
 
+## 🖼️ Screenshots with Output
+
+**Upload API Response**
 ![Upload Screenshot](screenshots/upload.png)
+```json
 {
-    "message": "Excel file uploaded successfully",
-    "tables": [
-        "CapBudgWS"
-    ]
+  "message": "Excel file uploaded successfully",
+  "tables": ["CapBudgWS"]
 }
+```
 
-![List Table Screenshot](screenshots\list table.png)
+**List Tables Response**
+![List Table Screenshot](screenshots/list_table.png)
+```json
 {
-    "message": "Excel file uploaded successfully",
-    "tables": [
-        "CapBudgWS"
-    ]
+  "tables": ["CapBudgWS"]
 }
+```
 
-![Table Details Screenshot](screenshots\table details.png)
+**Get Table Details Response**
+![Table Details Screenshot](screenshots/table_details.png)
+```json
 {
-    "table_name": "CapBudgWS",
-    "row_names": [
-        "INITIAL INVESTMENT",
-        "Initial Investment=",
-        "Opportunity cost (if any)=",
-        "Lifetime of the investment",
-        "Salvage Value at end of project=",
-        "Deprec. method(1:St.line;2:DDB)=",
-        "Tax Credit (if any )=",
-        "Other invest.(non-depreciable)=",
-        "WORKING CAPITAL",
-        "Initial Investment in Work. Cap=",
-        "Working Capital as % of Rev=",
-        "Salvageable fraction at end=",
-        "GROWTH RATES",
-        "Revenues",
-        "Fixed Expenses",
-        "Default: The fixed expense growth rate is set equal to the growth rate in revenues by default.",
-        "INITIAL INVESTMENT",
-        "Investment",
-        "- Tax Credit",
-        "Net Investment",
-        "+ Working Cap",
-        "+ Opp. Cost",
-        "+ Other invest.",
-        "Initial Investment",
-        "SALVAGE VALUE",
-        "Equipment",
-        "Working Capital",
-        "OPERATING CASHFLOWS",
-        "Lifetime Index",
-        "Revenues",
-        "-Var. Expenses",
-        "- Fixed Expenses",
-        "EBITDA",
-        "- Depreciation",
-        "EBIT",
-        "-Tax",
-        "EBIT(1-t)",
-        "+ Depreciation",
-        "- ∂ Work. Cap",
-        "NATCF",
-        "Discount Factor",
-        "Discounted CF",
-        "Book Value (beginning)",
-        "Depreciation",
-        "BV(ending)"
-    ]
+  "table_name": "CapBudgWS",
+  "row_names": ["INITIAL INVESTMENT", "Tax Credit (if any )=", ...]
 }
+```
 
-![Row Sum Screenshot](screenshots\row sum.png)
+**Row Sum Response**
+![Row Sum Screenshot](screenshots/row_sum.png)
+```json
 {
-    "table_name": "CapBudgWS",
-    "row_name": "Tax Credit (if any )=",
-    "sum": 0.4
+  "table_name": "CapBudgWS",
+  "row_name": "Tax Credit (if any )=",
+  "sum": 0.4
 }
+```
+
+---
+
