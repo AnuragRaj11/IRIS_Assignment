@@ -40,49 +40,33 @@ pip install -r requirements.txt
 
 ▶️ Usage
 Start the FastAPI server
-
-bash
-Copy
-Edit
 uvicorn main:app --reload --port 9090
+
 Visit Docs
-
-arduino
-Copy
-Edit
 http://127.0.0.1:9090/docs
-Upload Excel File
 
-http
-Copy
-Edit
+Upload Excel File
 POST /upload
 Form-Data: file: <your .xls or .xlsx file>
 Endpoints
 
 A. 🔗 /list_tables
-http
-Copy
-Edit
+
 GET /list_tables
 Response:
 {
   "tables": ["Sheet1", "Investment", "Revenue"]
 }
+
 B. 🔗 /get_table_details
-http
-Copy
-Edit
 GET /get_table_details?table_name=Sheet1&limit=10&offset=0
 Response:
 {
   "table_name": "Sheet1",
   "row_names": ["Initial Investment", "EBIT", "Net CF"]
 }
+
 C. 🔗 /row_sum
-http
-Copy
-Edit
 GET /row_sum?table_name=Sheet1&row_name=Initial Investment
 Response:
 {
@@ -90,10 +74,8 @@ Response:
   "row_name": "Initial Investment",
   "sum": 62484.0
 }
+
 D. 🔗 /column_sum
-http
-Copy
-Edit
 GET /column_sum?table_name=Sheet1&column_name=2024
 Response:
 {
@@ -101,6 +83,7 @@ Response:
   "column_name": "2024",
   "sum": 107594.50
 }
+
 🧪 Testing
 To help you quickly test your application, use the following:
 
@@ -150,3 +133,79 @@ These improvements and edge-case handling ensure your API is:
 ├── requirements.txt      
 ├── postman_collection.json 
 └── README.md             
+
+
+▶️ Usage
+Start the FastAPI server:
+uvicorn main:app --reload --port 9090
+Visit Swagger docs: http://127.0.0.1:9090/docs
+
+📡 API Endpoints
+🔹 A. /upload
+Upload Excel File
+
+Method: POST
+
+Form-Data: file → .xls or .xlsx
+
+📸 Screenshot:
+
+🔹 B. /list_tables
+List all available sheet/table names
+
+Method: GET
+
+📸 Screenshot:
+
+🔹 C. /get_table_details
+Get row names (first column) for a sheet
+GET /get_table_details?table_name=<SheetName>&limit=10&offset=0
+
+🔹 D. /row_sum
+Calculate total of a specific row
+GET /row_sum?table_name=<SheetName>&row_name=<RowHeader>
+📸 Screenshot:
+
+🧪 Testing
+To help you quickly test your application, use:
+
+✅ Base URL: http://localhost:9090
+
+✅ Postman Collection: postman_collection.json
+
+Use this collection to test:
+
+/upload
+
+/list_tables
+
+/get_table_details
+
+/row_sum
+
+| Case                       | Description                    | Fix                                    |
+| -------------------------- | ------------------------------ | -------------------------------------- |
+| Empty or Corrupt Excel     | App crashes if file is invalid | Validate on upload                     |
+| No Numeric Data in Row     | Sum fails if only text         | Return 0 or show warning               |
+| Trailing Spaces in Names   | "Revenue " ≠ "Revenue"         | Use `.strip()` everywhere              |
+| Very Large Files           | May crash                      | Use chunked loading/streaming          |
+| Concurrent Requests        | Shared state issues            | Use thread-safe file storage or DB     |
+| Currency/Fraction Formats  | Like `$1,000` or `1 3/4`       | Custom `_extract_numeric()` handles it |
+| Hidden Rows/Sheets         | Ignored by default             | Add flag: `?include_hidden=true`       |
+| Special Characters in Name | May break in URL               | Use proper URL encoding                |
+
+
+🗂 Folder Structure
+
+├── excel_processor.py          
+├── main.py                   
+├── requirements.txt             
+├── postman_collection.json    
+├── README.md                    
+└── screenshots/                
+
+
+✅ Why This Matters
+These improvements and edge-case handling ensure your API is:
+
+⚡ Fast | 🧠 Smart | 🧱 Robust | 🤝 User-Friendly | 🔁 Scalable
