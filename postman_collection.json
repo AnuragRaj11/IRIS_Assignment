@@ -1,0 +1,122 @@
+{
+  "info": {
+    "name": "Excel Processor API",
+    "_postman_id": "abc123-xyz456",
+    "description": "API collection for testing Excel Processor endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Upload Excel File",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:9090/upload",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9090",
+          "path": ["upload"]
+        }
+      }
+    },
+    {
+      "name": "List Tables",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/list_tables",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9090",
+          "path": ["list_tables"]
+        }
+      }
+    },
+    {
+      "name": "Get Table Details",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/get_table_details?table_name=Sheet1&limit=5&offset=0",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9090",
+          "path": ["get_table_details"],
+          "query": [
+            { "key": "table_name", "value": "Sheet1" },
+            { "key": "limit", "value": "5" },
+            { "key": "offset", "value": "0" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Row Sum",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/row_sum?table_name=Sheet1&row_name=Total",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9090",
+          "path": ["row_sum"],
+          "query": [
+            { "key": "table_name", "value": "Sheet1" },
+            { "key": "row_name", "value": "Total" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Column Sum",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/column_sum?table_name=Sheet1&column_name=2024",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9090",
+          "path": ["column_sum"],
+          "query": [
+            { "key": "table_name", "value": "Sheet1" },
+            { "key": "column_name", "value": "2024" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Add Column",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/add_column?table_name=Sheet1&column_name=NewCol&default_value=0",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9090",
+          "path": ["add_column"],
+          "query": [
+            { "key": "table_name", "value": "Sheet1" },
+            { "key": "column_name", "value": "NewCol" },
+            { "key": "default_value", "value": "0" }
+          ]
+        }
+      }
+    }
+  ]
+}
